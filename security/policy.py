@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from security.access_control import AccessControlOutcome
 from security.risk import RiskAssessment
 from shared.threats import ThreatCategory
 
@@ -39,7 +40,10 @@ class PolicyOutcome:
     reasons: tuple[str, ...]
 
 
-def evaluate_policy(risk_assessment: RiskAssessment) -> PolicyOutcome:
+def evaluate_policy(
+    risk_assessment: RiskAssessment,
+    access_control: AccessControlOutcome | None = None,
+) -> PolicyOutcome:
     score = risk_assessment.risk_score
     if isinstance(score, bool) or not isinstance(score, int) or not 0 <= score <= 100:
         raise ValueError("risk_score must be an integer from 0 to 100")
@@ -53,6 +57,8 @@ def evaluate_policy(risk_assessment: RiskAssessment) -> PolicyOutcome:
         if category in categories
     ]
     reasons.extend(risk_assessment.reasons)
+    if access_control is not None:
+        reasons.extend(access_control.reasons)
 
     for first_category, second_category, override_reason in _HARD_BLOCK_CATEGORIES:
         if first_category in categories and second_category in categories:
@@ -60,6 +66,11 @@ def evaluate_policy(risk_assessment: RiskAssessment) -> PolicyOutcome:
             return PolicyOutcome(
                 decision="BLOCK", risk_score=score, reasons=tuple(reasons)
             )
+
+    if access_control is not None and access_control.decision == "BLOCK":
+        return PolicyOutcome(
+            decision="BLOCK", risk_score=score, reasons=tuple(reasons)
+        )
 
     if score <= _ALLOW_MAX_SCORE:
         decision: PolicyDecision = "ALLOW"
@@ -81,4 +92,13 @@ def evaluate_policy(risk_assessment: RiskAssessment) -> PolicyOutcome:
             f"{_APPROVAL_MAX_SCORE + 1}-100."
         )
     reasons.append(threshold_reason)
+    if (
+        decision == "ALLOW"
+        and access_control is not None
+        and access_control.decision == "APPROVAL_REQUIRED"
+    ):
+        decision = "APPROVAL_REQUIRED"
+        reasons.append(
+            "Policy requires approval because access control restricted the requested resource."
+        )
     return PolicyOutcome(decision=decision, risk_score=score, reasons=tuple(reasons))

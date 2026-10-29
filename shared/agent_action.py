@@ -6,6 +6,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 
+SUPPORTED_SOURCE_CATEGORIES = frozenset({"file", "database", "api", "email", "web"})
+
 
 @dataclass(slots=True)
 class AgentAction:

@@ -23,12 +23,15 @@ class SecurityDecision:
     threat_types: tuple[ThreatCategory, ...]
     reasons: tuple[str, ...]
     timestamp: datetime
+    access_decision: DecisionValue = "ALLOW"
+    data_leakage_detected: bool = False
 
 
 def build_security_decision(
     action: AgentAction,
     risk_assessment: RiskAssessment,
     policy_outcome: PolicyOutcome,
+    access_decision: DecisionValue = "ALLOW",
 ) -> SecurityDecision:
     if policy_outcome.risk_score != risk_assessment.risk_score:
         raise ValueError("policy outcome and risk assessment scores must match")
@@ -52,4 +55,6 @@ def build_security_decision(
         threat_types=tuple(threat_types),
         reasons=tuple(policy_outcome.reasons),
         timestamp=action.timestamp,
+        access_decision=access_decision,
+        data_leakage_detected="EXTERNAL_EXFILTRATION" in seen_categories,
     )

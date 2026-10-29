@@ -18,6 +18,9 @@ class SecurityEventCreate(BaseModel):
     action_id: str = Field(..., description="Action ID triggering the event")
     agent_id: str = Field(default="agent_01", description="Agent ID")
     action_type: str = Field(..., description="Action type or tool name")
+    tool: Optional[str] = Field(default=None, description="Requested tool")
+    source: str = Field(default="unknown", description="Action source")
+    trusted_source: bool = Field(default=True, description="Whether the content source is trusted")
     resource: str = Field(default="*", description="Target resource")
     parameters: Dict[str, Any] = Field(default_factory=dict, description="Action parameters")
     timestamp: Optional[str] = Field(default=None, description="ISO timestamp")
@@ -30,6 +33,10 @@ class SecurityEventCreate(BaseModel):
     risk_score: float = Field(default=0.0, ge=0.0, le=100.0, description="Evaluated risk score")
     decision: str = Field(default="ALLOW", pattern=r"^(ALLOW|BLOCK|APPROVAL_REQUIRED)$", description="ALLOW, BLOCK, or APPROVAL_REQUIRED")
     decision_reason: str = Field(default="", description="Decision justification")
+    threat_types: List[str] = Field(default_factory=list, description="Detected threat categories")
+    execution_status: str = Field(default="not_requested", description="Execution or non-execution status")
+    access_decision: str = Field(default="ALLOW", description="Tool/resource access-control outcome")
+    data_leakage_detected: bool = Field(default=False, description="Whether exfiltration was detected")
 
 
 class EventListResponse(BaseModel):

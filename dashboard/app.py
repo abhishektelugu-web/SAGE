@@ -15,7 +15,7 @@ from dashboard.views.security_dashboard import render_security_dashboard
 def main():
     """Streamlit entry point configuring wide view and invoking main dashboard."""
     st.set_page_config(
-        page_title="SAGE AI — Security Dashboard",
+        page_title="TRACEGUARD — AI Agent Runtime Security Platform",
         page_icon="🛡️",
         layout="wide",
         initial_sidebar_state="expanded",

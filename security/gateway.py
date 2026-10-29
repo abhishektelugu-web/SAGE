@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
+from security.access_control import evaluate_access
 from security.decision import SecurityDecision, build_security_decision
 from security.ml_adapter import ml_result_to_finding
 from security.policy import evaluate_policy
@@ -30,6 +31,9 @@ class SecurityGateway:
     ) -> SecurityDecision:
         """Evaluate an action through rules, optional ML, risk, policy, and decision."""
         findings = list(evaluate_rules(action))
+        access_control = evaluate_access(action)
+        if access_control.finding is not None:
+            findings.append(access_control.finding)
         if ml_result is None and self._detector is not None:
             ml_result = self._detector(action)
         ml_finding = ml_result_to_finding(ml_result)
@@ -37,5 +41,10 @@ class SecurityGateway:
             findings.append(ml_finding)
 
         risk_assessment = calculate_risk(tuple(findings))
-        policy_outcome = evaluate_policy(risk_assessment)
-        return build_security_decision(action, risk_assessment, policy_outcome)
+        policy_outcome = evaluate_policy(risk_assessment, access_control)
+        return build_security_decision(
+            action,
+            risk_assessment,
+            policy_outcome,
+            access_decision=access_control.decision,
+        )

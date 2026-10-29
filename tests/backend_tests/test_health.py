@@ -18,3 +18,11 @@ def test_root_metadata(client):
     assert data["status"] == "online"
     assert "events_endpoint" in data
     assert "stats_endpoint" in data
+
+
+def test_browser_root_redirects_to_dashboard(client, monkeypatch):
+    monkeypatch.setenv("TRACEGUARD_DASHBOARD_URL", "http://127.0.0.1:8501/")
+    response = client.get("/", headers={"accept": "text/html"}, follow_redirects=False)
+
+    assert response.status_code == 307
+    assert response.headers["location"] == "http://127.0.0.1:8501/"

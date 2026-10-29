@@ -27,6 +27,8 @@ def list_events(
     decision: Optional[str] = Query(None, description="Filter by decision: ALLOW, BLOCK, APPROVAL_REQUIRED"),
     threat_type: Optional[str] = Query(None, description="Filter by threat type, e.g. prompt_injection"),
     agent_id: Optional[str] = Query(None, description="Filter by agent ID"),
+    source: Optional[str] = Query(None, description="Filter by source type, e.g. email, web, file"),
+    execution_status: Optional[str] = Query(None, description="Filter by execution status"),
     limit: int = Query(100, ge=1, le=500, description="Max events to return"),
     offset: int = Query(0, ge=0, description="Pagination offset"),
 ):
@@ -35,6 +37,8 @@ def list_events(
         decision=decision,
         threat_type=threat_type,
         agent_id=agent_id,
+        source=source,
+        execution_status=execution_status,
         limit=limit,
         offset=offset,
     )

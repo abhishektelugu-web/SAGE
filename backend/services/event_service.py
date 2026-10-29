@@ -30,6 +30,9 @@ class EventService:
             action_id=data.action_id,
             agent_id=data.agent_id,
             action_type=data.action_type,
+            tool=data.tool,
+            source=data.source,
+            trusted_source=data.trusted_source,
             resource=data.resource,
             parameters=data.parameters,
             timestamp=timestamp,
@@ -40,6 +43,10 @@ class EventService:
             risk_score=float(data.risk_score),
             decision=data.decision.upper(),
             decision_reason=data.decision_reason,
+            threat_types=data.threat_types,
+            execution_status=data.execution_status,
+            access_decision=data.access_decision,
+            data_leakage_detected=data.data_leakage_detected,
         )
 
         # Log and persist safely
@@ -58,6 +65,8 @@ class EventService:
         decision: Optional[str] = None,
         threat_type: Optional[str] = None,
         agent_id: Optional[str] = None,
+        source: Optional[str] = None,
+        execution_status: Optional[str] = None,
         limit: int = 100,
         offset: int = 0,
     ) -> List[SecurityEvent]:
@@ -66,6 +75,8 @@ class EventService:
             decision=decision,
             threat_type=threat_type,
             agent_id=agent_id,
+            source=source,
+            execution_status=execution_status,
             limit=limit,
             offset=offset,
         )
@@ -75,12 +86,16 @@ class EventService:
         decision: Optional[str] = None,
         threat_type: Optional[str] = None,
         agent_id: Optional[str] = None,
+        source: Optional[str] = None,
+        execution_status: Optional[str] = None,
     ) -> int:
         """Count events matching specified filters."""
         return self.db.count_events(
             decision=decision,
             threat_type=threat_type,
             agent_id=agent_id,
+            source=source,
+            execution_status=execution_status,
         )
 
 

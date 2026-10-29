@@ -20,13 +20,19 @@ def render_event_table(events: List[Dict[str, Any]]) -> None:
             "Event ID": ev.get("event_id", ""),
             "Action ID": ev.get("action_id", ""),
             "Agent ID": ev.get("agent_id", ""),
+            "Source": ev.get("source", "unknown"),
+            "Trusted Source": ev.get("trusted_source", True),
             "Action": ev.get("action_type", ""),
+            "Tool": ev.get("tool") or "",
             "Resource": ev.get("resource", "*"),
-            "Threat Type": ev.get("threat_type", "none"),
+            "Threat Types": ", ".join(ev.get("threat_types") or [ev.get("threat_type", "none")]),
             "ML Confidence": f"{float(ev.get('ml_confidence', 0.0)):.2f}",
             "Risk Score": f"{float(ev.get('risk_score', 0.0)):.1f}",
             "Decision": ev.get("decision", ""),
+            "Access": ev.get("access_decision", ""),
+            "Data Leakage": ev.get("data_leakage_detected", False),
             "Reason": ev.get("decision_reason", "") or ev.get("ml_reason", ""),
+            "Execution": ev.get("execution_status", "not_requested"),
             "Timestamp": ev.get("timestamp", ""),
         })
 
@@ -35,7 +41,7 @@ def render_event_table(events: List[Dict[str, Any]]) -> None:
     # Render DataFrame
     st.dataframe(
         df,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             "Decision": st.column_config.TextColumn(

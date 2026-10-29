@@ -6,12 +6,18 @@ Quickly start the backend API:
 
 import os
 import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
 import uvicorn
 
 # Ensure project root is importable
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
+
+# Load local configuration without overriding variables supplied by the process.
+load_dotenv(Path(PROJECT_ROOT) / ".env", override=False)
 
 if __name__ == "__main__":
     host = os.getenv("API_HOST", "127.0.0.1")

@@ -65,9 +65,17 @@ class AuditLogger:
             "action_id": safe_event.action_id,
             "agent_id": safe_event.agent_id,
             "action_type": safe_event.action_type,
+            "tool": safe_event.tool,
+            "source": safe_event.source,
+            "trusted_source": safe_event.trusted_source,
             "decision": safe_event.decision,
             "threat_type": safe_event.threat_type,
+            "threat_types": safe_event.threat_types,
             "risk_score": safe_event.risk_score,
+            "decision_reason": self.sanitize_data(safe_event.decision_reason),
+            "execution_status": safe_event.execution_status,
+            "access_decision": safe_event.access_decision,
+            "data_leakage_detected": safe_event.data_leakage_detected,
         }
         logger.warning("AUDIT_ALERT: %s", json.dumps(payload)) if safe_event.decision == "BLOCK" else logger.info("AUDIT_LOG: %s", json.dumps(payload))
         return safe_event

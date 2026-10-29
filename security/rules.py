@@ -69,6 +69,8 @@ _RULES = (
             r"\bprivate[\s_-]+keys?\b",
             r"\bapi[\s_-]+keys?\b",
             r"\btokens?\b",
+            r"\bcustomer[\s_-]+records?\b",
+            r"\bpersonal\s+data\b",
             r"(?<![\w])\.env(?:[.\w-]*)?(?!\w)",
         ),
     ),
@@ -81,15 +83,17 @@ _RULES = (
             r"\b(?:send|upload|post|transmit)\b.{0,80}"
             r"\b(?:sensitive\s+)?(?:data|information|credentials?|secrets?|"
             r"passwords?|private[\s_-]+keys?|api[\s_-]+keys?|tokens?|"
-            r"file\s+contents?)\b.{0,80}\b(?:to|into)\b.{0,30}"
+            r"file\s+contents?|customer[\s_-]+records?|personal\s+data)\b"
+            r".{0,80}\b(?:to|into)\b.{0,30}"
             r"\b(?:an?\s+)?(?:external|remote|third[- ]party)\b",
             r"\b(?:upload|post|transmit)\b.{0,50}"
             r"\b(?:sensitive\s+)?(?:data|information|credentials?|secrets?|"
             r"passwords?|private[\s_-]+keys?|api[\s_-]+keys?|tokens?|"
-            r"file\s+contents?)\b",
+            r"file\s+contents?|customer[\s_-]+records?|personal\s+data)\b",
             r"\b(?:send|upload|post|transmit)\b.{0,80}"
             r"\b(?:data|information|credentials?|secrets?|passwords?|"
-            r"private[\s_-]+keys?|api[\s_-]+keys?|tokens?|file\s+contents?)"
+            r"private[\s_-]+keys?|api[\s_-]+keys?|tokens?|file\s+contents?|"
+            r"customer[\s_-]+records?|personal\s+data)"
             r"\b.{0,40}\b(?:externally|outside\s+(?:the\s+)?organization)\b",
         ),
     ),
